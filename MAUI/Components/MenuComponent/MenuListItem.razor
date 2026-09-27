@@ -1,0 +1,19 @@
+@inject NavigationManager _nav
+
+<span class="menu-list-item" style="@($"background-color: {BackgroundColor};");" @onclick="@MoveToPage">
+    <Blazicon Svg="@(Icon != null ? Icon.WithColor(IconColor) : null)"/>
+</span>
+
+
+@code{
+    [Parameter] public string Text { get; set; } = "";
+    [Parameter] public string Link { get; set; } = "";
+    [Parameter] public string IconColor { get; set; } = "#fff";
+    [Parameter] public string BackgroundColor { get; set; } = "transparent";
+    [Parameter] public SvgIcon? Icon { get; set; }
+    void MoveToPage()
+    {
+        _nav.NavigateTo(Link);
+        StateHasChanged();
+    }
+}

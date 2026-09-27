@@ -1,0 +1,39 @@
+<style>
+    #menu-list *{
+        user-select: none;
+    }
+    #menu-list{
+        display: flex;
+        overflow: hidden;
+        gap: 5px;
+        width: 100%;
+        height: 100px;
+        padding: 10px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #00000036;
+        border-radius: 10px;
+    }
+    #menu-list .menu-list-item {
+        display: flex;
+        padding: 10px;
+        height: 100% !important; 
+        border-radius: 100%; 
+    }
+    #menu-list .menu-list-item:active{
+        opacity: 0.5;
+    }
+    #menu-list .menu-list-item[data-selected="True"]{
+        opacity: 0.1;
+    }
+</style>
+
+<div id="menu-list">
+    @ChildContent
+</div>
+
+@code{
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+}

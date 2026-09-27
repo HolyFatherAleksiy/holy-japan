@@ -1,0 +1,18 @@
+<div class="card" data-is_active="@Active.ToString()">
+    <Blazicon Svg="@MdiIcon.Bell.WithColor( Active ? "var(--primary)" : "#fff")" @onclick="@Click"/>
+    @if (Active)
+    {
+        <span style="position: absolute; width: 30px; height: 30px; top: 0; right: 0;"><Blazicon Svg="@MdiIcon.CheckBold.WithColor("var(--primary)")"/></span>
+    }
+</div>
+
+@code{
+    [Parameter] public bool Active { get; set; }
+    [Parameter] public EventCallback<bool> ActiveChanged { get; set; }
+
+    async Task Click()
+    {
+        Active = !Active;
+        await ActiveChanged.InvokeAsync(Active);
+    }
+}

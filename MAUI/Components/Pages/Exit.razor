@@ -1,0 +1,20 @@
+@page "/exit"
+@using HolyJapan.Components.DialogComponent
+@inject NavigationManager _nav
+<Dialog Text="@Localisation.GetValue(InterfaceElements.ExitQuestion)" 
+        Title="@Localisation.GetValue(InterfaceElements.ConfirmTitle)"
+        OnCancel="@(() => _nav.NavigateTo("/"))"
+        OnAccept="@Accept"/>
+
+@code{
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+
+    void Accept()
+    {
+        Application.Current?.Quit();
+    }
+}

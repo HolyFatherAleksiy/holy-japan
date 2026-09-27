@@ -1,0 +1,11 @@
+<div class="card">
+    <Blazicon Svg="@MdiIcon.Translate.WithColor("#fff")" @onclick="@Click"/>
+</div>
+
+@code{
+    [Parameter] public EventCallback OnClick { get; set; }
+    async Task Click()
+    {
+        await OnClick.InvokeAsync();
+    }
+}

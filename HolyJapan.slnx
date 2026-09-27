@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/MAUI/">
+    <Project Path="MAUI/HolyJapan.csproj" />
+  </Folder>
+  <Project Path="DataBaseRepository/DataBaseRepository.csproj" />
+  <Project Path="Shared/Shared.csproj" />
+</Solution>

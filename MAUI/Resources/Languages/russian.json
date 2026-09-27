@@ -1,0 +1,12 @@
+{
+    "Code" : "Rus",
+    "Data" : {
+        "Yes": "Да",
+        "No": "Нет",
+        "ConfirmTitle": "Подтвердите действие",
+        "ExitQuestion": "Вы действительно хотите выйти?",
+        "JsonSerializeError" : "Не удалось получить данные из JSON",
+        "EmptyFile" : "Файл пустой",
+        "LargeFile" : "Файл слишком большой"
+    } 
+}

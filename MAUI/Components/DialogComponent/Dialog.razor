@@ -1,0 +1,105 @@
+<style>
+    .dialog{
+        height: 100%; 
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dialog .title{
+        width: 100%;
+        justify-content: center;
+        color: var(--primary);
+        font-size: 44px;
+        text-align: center;
+    }
+    .dialog .text{
+        width: 100%;
+        justify-content: center;
+        color: #fff;
+        text-align: center;
+    }
+    .dialog .title[data-show="False"]{
+        display: none;
+    }
+    .dialog .text[data-show="False"]{
+        display: none;
+    }
+
+    .dialog .title[data-show="True"]{
+        display: flex;
+    }
+
+    .dialog .text[data-show="True"]{
+        display: flex;
+    }
+
+    .dialog-content{
+        width: 50%;
+        height: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .btn-group {
+        display: flex;
+        gap: 5px;
+        width: 100%;
+        max-width: 500px;
+        min-width: 200px;
+    }
+    .btn{
+        padding: 10px 20px;
+        font-size: 24px;
+        border-radius: 5px;
+        background-color: ;
+        border: none;
+        outline: none;
+        color: #fff;
+        width: 100%;
+    }
+
+    .btn:active{
+        outline: 3px solid var(--outline-color);
+    }
+    .btn-primary{
+        color: #fff;
+        background-color: var(--primary);
+        --outline-color: var(--primary-light);
+    }
+    .btn-secondary{
+        color: #fff;
+        background-color: var(--secondary);
+        --outline-color: var(--secondary-light);
+    }
+</style>
+<div class="dialog">
+    <div class="dialog-content">
+        <span data-show="@ShowTitle.ToString()" class="title">@Title</span>
+        <span data-show="@ShowText.ToString()" class="text">@Text</span>
+        <div class="btn-group" st>
+            <button class="btn btn-primary" @onclick="@Accept">@Localisation.GetValue(InterfaceElements.Yes)</button>
+            <button class="btn btn-secondary" @onclick="@Cancel">@Localisation.GetValue(InterfaceElements.No)</button>
+        </div>
+    </div>
+</div>
+
+@code{
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Text { get; set; }
+    bool ShowTitle => !string.IsNullOrEmpty(Title);
+    bool ShowText => !string.IsNullOrEmpty(Text);
+
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public EventCallback OnAccept { get; set; }
+
+    async Task Cancel(){
+        await OnCancel.InvokeAsync();
+    }
+    async Task Accept(){
+        await OnAccept.InvokeAsync();
+    }
+
+}

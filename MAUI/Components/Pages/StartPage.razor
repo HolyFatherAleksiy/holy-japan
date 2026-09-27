@@ -1,0 +1,15 @@
+@using HolyJapan.Components.MenuComponent
+@page "/"
+
+<span class="page-title">Стартовая</span>
+<div id="content">
+
+</div>
+
+<MenuList>
+    <MenuListItem IconColor="#fff" BackgroundColor="transparent" Icon="@MdiIcon.Bookshelf" Link="/me-lessons"/>
+    <MenuListItem IconColor="#fff" BackgroundColor="transparent" Icon="@MdiIcon.FileImport" Link="/imported-lessons"/>
+    <MenuListItem IconColor="#fff" BackgroundColor="var(--primary)" Icon="@MdiIcon.BookOpenPageVariantOutline" Link="/learn-lesson"/>
+    <MenuListItem IconColor="#fff" BackgroundColor="transparent" Icon="@MdiIcon.Cog" Link="/settings"/>
+    <MenuListItem IconColor="#fff" BackgroundColor="transparent" Icon="@MdiIcon.ExitRun" Link="/exit"/>
+</MenuList>
