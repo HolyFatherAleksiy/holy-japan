@@ -1,0 +1,72 @@
+@using DataBaseRepository.Models
+@using DataBaseRepository.Services.Interfaces
+@using MAUI.Services
+@using MAUI.Services.Interfaces
+@using Newtonsoft.Json
+@using Shared
+
+@inject ILanguageFileService _languageFile
+@inject ILanguageService _languageService
+@foreach(var item in Languages)
+{
+    var active = @IsSelected(item.Code);
+    <div class="card" data-is_active="@active.ToString()" @onclick="@(async () => await SelectLanguage(item))" >
+        @item.Code
+        @if (active)
+        {
+            <span style="position: absolute; width: 30px; height: 30px; top: 0; right: 0;"><Blazicon Svg="@MdiIcon.CheckBold.WithColor("var(--primary)")"/></span>
+        }
+    </div>
+}
+<div class="card secondary" @onclick="@SelectFile">
+    <Blazicon Svg="@MdiIcon.Plus.WithColor("#fff")"/>
+</div>
+
+@code{
+    List<Language> Languages = [];
+    bool IsSelected(string value) => value.Equals(SelectedLanguage);
+    [Parameter] public string SelectedLanguage { get; set; } = "Eng";
+    [Parameter] public EventCallback<Language> OnSelectLanguage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await UpdateList();
+    }
+
+    async Task UpdateList()
+    {
+        try
+        {
+            Languages = await _languageService.GetAllData();
+        }
+        catch(Exception ex)
+        {
+            await Alerts.Show(Localisation.GetValue(InterfaceElements.ErrorText), ex.Message, Localisation.GetValue(InterfaceElements.CloseText));
+        }
+    }
+    async Task SelectLanguage(Language language)
+    {
+        SelectedLanguage = language.Code;
+
+        var data = JsonConvert.DeserializeObject<Dictionary<InterfaceElements, string>>(language.JSON) ?? Localisation.DefaultText;
+        Localisation.Text = data;
+        await InvokeAsync(StateHasChanged);
+        await Alerts.Show(Localisation.GetValue(InterfaceElements.ErrorText), Localisation.GetValue(InterfaceElements.Next), Localisation.GetValue(InterfaceElements.CloseText));
+    }
+    async Task SelectFile()
+    {
+        try
+        {
+            var file = await _languageFile.PickJsonFile();
+            var json = await _languageFile.GetJson(file);
+            var data = _languageFile.SerializeLanguage(json);
+            var newLanguage = await _languageService.AddAsync(data.Code, file.FileName, JsonConvert.SerializeObject(data.Data));
+            Languages.Add(newLanguage);
+            await InvokeAsync(StateHasChanged);
+        }
+        catch(Exception ex)
+        {
+            await Alerts.Show(Localisation.GetValue(InterfaceElements.ErrorText), ex.Message, Localisation.GetValue(InterfaceElements.CloseText));
+        }
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "Code" : "Eng 🇷🇺",
+    "Data" : {
+        "Yes": "Yes",
+        "No": "No",
+        "ConfirmTitle": "Confirm action",
+        "ExitQuestion": "Are you sure you want to exit?",
+        "JsonSerializeError" : "Failed to get data from JSON",
+        "EmptyFile" : "File is empty",
+        "LargeFile" : "File is too large",
+        "ErrorText" : "Error",
+        "CloseText" : "Close",
+        "KeyNotFound" : "Not found",
+        "KeyFound" : "Already exists",
+        "UserDataText" : "User profile data",
+        "ExitPageTitle" : "Exit",
+        "ImportedLessonsPageTitle" : "Imported lessons",
+        "MyLessonsPageTitle" : "My lessons",
+        "LearnLessonPageTitle" : "To study a lesson",
+        "SettingsPageTitle" : "Settings",
+        "StartPageTitle" : "Start page",
+        "RegistrationPageTitle" : "Registration",
+        "NeedEnterNickname" : "You need to enter a pseudonym.",
+        "NeedSelectLanguage" : "You need to choose a interface language or upload your own.",
+        "CanChooseAvatar" : "You can choose an avatar.",
+        "UseSchedule" : "Do you want to use the notification schedule?",
+        "Next" : "Next",
+        "ExampleText" : "Selected english language"
+    } 
+}

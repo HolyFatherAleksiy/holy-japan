@@ -24,28 +24,60 @@
       overflow-y: hidden;
       display: flex;
       flex-direction: column; 
-      padding: 5px;
-      gap: 5px;
+      padding: 20px;
+      gap: 10px;
+
+      background-image: var(--background-image);
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
     }
     #content{      
       height: 100%;
       overflow-y: auto;
-      border-radius: 10px;
-      background-color: #00000027;
+      border-radius: 20px;
+      background-color: #fcfcfc00;
+      backdrop-filter: blur(20px);
+      box-shadow: inset 0 0 50px 0 #fff3;
 
       scrollbar-color: var(--primary) transparent;
       scrollbar-width:thin;
+      opacity: 0;
+      transition: opacity 1s;
     }
     blazor-focus-on-navigate{
       display: none;
     }
+    .icon{
+      display: flex;
+      background-color: #fff2;
+      backdrop-filter: blur(20px);
+      padding: 5px;
+      border-radius: 100%;
+      width: var(--w);
+      height: var(--h);
+    }
+    .icon *{
+      color: var(--c);
+    }
     .page-title{
-        display: block;
-        color: var(--primary);
+        display: flex;
+        gap: 10px;
+        color: #fff;
         width: 100%;
         text-align: center;
         font-size: 34px;
         user-select: none;
+        background-color: #00000065;
+        backdrop-filter: blur(20px);
+        border-radius: 20px;
+        padding: 10px 20px;
+    }
+    .caption{
+        color: var(--c);
+        font-size: var(--fs);
+        font-style: italic;
+        text-shadow: 5px 5px 5px#0005;
     }
 
 @font-face {
@@ -61,3 +93,112 @@
   --secondary: #7772;
   --secondary-light: #81818122;
 }
+
+
+
+
+    #settings-list{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        justify-content: center;
+        padding: 20px;
+    }
+    .settings-list-item{
+        width: 100%;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .card{
+        width: 100px;
+        height: 100px;
+        background-color: #00000085;
+        backdrop-filter: blur(20px);
+        border-radius: 10px;
+        padding: 10px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 34px;
+        font-weight: bold;
+        user-select: none;
+        box-shadow: 10px 10px 10px 0 #00000013, inset 0 0 30px 0 #fff2;
+    }
+    .card[data-is_active="True"]{
+        outline: 3px solid var(--primary);
+        color: var(--primary);
+    }
+    .card.secondary{
+        background-color: rgba(255, 77, 175, 0.09);   
+        padding: 20px;
+        box-shadow: none;
+      }
+    .card.secondary * {
+        color: var(--primary-light);
+
+    }
+    .card:active{
+        opacity: 0.5;
+    }
+
+    .overlay{
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1111;
+        width: 100%;
+        height: 100%;
+        background-color: #000a;
+        backdrop-filter: blur(4px);
+    }
+    .dialog{
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 50px;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 5px;
+        width: 100%;
+        max-width: 500px;
+        min-width: 200px;
+    }
+    .btn{
+        backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 10px 20px;
+        font-size: 34px;
+        border-radius: 20px;
+        background-color: #ffffff23;
+        border: none;
+        outline: none;
+        color: #fff;
+        width: 100%;
+    }
+
+    .btn:active{
+        outline: 3px solid var(--outline-color);
+    }
+    .btn-primary{
+        color: #fff;
+        background-color: var(--primary);
+        --outline-color: var(--primary-light);
+    }
+    .btn-secondary{
+        color: #fff;
+        background-color: var(--secondary);
+        --outline-color: var(--secondary-light);
+    }

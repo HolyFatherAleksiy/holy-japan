@@ -6,5 +6,11 @@ namespace MAUI.Services
 
         public static Task Show(string title, string message, string cancel = "OK")
             => Page.DisplayAlertAsync(title, message, cancel);
+
+        internal static async Task Show(object value1, string message, object value2)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

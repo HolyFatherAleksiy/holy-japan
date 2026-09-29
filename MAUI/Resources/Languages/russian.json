@@ -7,6 +7,24 @@
         "ExitQuestion": "Вы действительно хотите выйти?",
         "JsonSerializeError" : "Не удалось получить данные из JSON",
         "EmptyFile" : "Файл пустой",
-        "LargeFile" : "Файл слишком большой"
+        "LargeFile" : "Файл слишком большой",
+        "ErrorText" : "Ошибка",
+        "CloseText" : "Закрыть",
+        "KeyNotFound" : "Не найдено",
+        "KeyFound" : "Уже существует",
+        "UserDataText" : "Данные профиля пользователя",
+        "ExitPageTitle" : "Выход",
+        "ImportedLessonsPageTitle" : "Импортированные уроки",
+        "MyLessonsPageTitle" : "Мои уроки",
+        "LearnLessonPageTitle" : "Учить уроки",
+        "SettingsPageTitle" : "Настройки",
+        "StartPageTitle" : "Стартовая страница",
+        "RegistrationPageTitle" : "Регистрация",
+        "NeedEnterNickname" : "Нужно ввести псевдоним",
+        "NeedSelectLanguage" : "Нужно выбрать язык интерфейса или загрузить свой.",
+        "CanChooseAvatar" : "Можно выбрать аватар.",
+        "UseSchedule" : "Хотите ли Вы получать уведомления по расписанию?",
+        "Next" : "Далее",
+        "ExampleText" : "Выбран русский язык"
     } 
 }

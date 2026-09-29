@@ -1,8 +1,8 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using HolyJapan;
+using System.Reflection;
 using MAUI.Models;
 using MAUI.Services.Interfaces;
+using Newtonsoft.Json;
+using Shared;
 
 namespace MAUI.Services
 {
@@ -13,7 +13,7 @@ namespace MAUI.Services
         {
             var result = await FilePicker.Default.PickAsync(new PickOptions
             {
-                PickerTitle = "Выберите JSON",
+                PickerTitle = "JSON",
                 FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
                 {
                     { DevicePlatform.WinUI,   new[] { ".json" } },
@@ -27,6 +27,11 @@ namespace MAUI.Services
 
             return result;
         }
+        private async Task<string> GetString(Stream stream)
+        {            
+            using var reader = new StreamReader(stream);
+            return await reader.ReadToEndAsync();
+        }
         public async Task<string> GetJson(FileResult file)
         {
             using var stream = await file.OpenReadAsync();
@@ -35,17 +40,21 @@ namespace MAUI.Services
             if (stream.Length > maxSize)
                 throw new Exception(Localisation.GetValue(InterfaceElements.LargeFile));
 
-            using var reader = new StreamReader(stream);
-            return await reader.ReadToEndAsync();
+            return await GetString(stream);
+        }
+        public async Task<string> GetJsonByFileNameAsync(string filename)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = $"{assembly.GetName().Name}.Resources.Languages.{filename}";
+
+            using var stream = assembly.GetManifestResourceStream(resourceName) 
+                ?? throw new InvalidOperationException($"{filename} - {Localisation.GetValue(InterfaceElements.KeyNotFound)}");
+
+            return await GetString(stream);
         }
         public LanguageDTO SerializeLanguage(string json)
         {
-            var options = new JsonSerializerOptions
-            {
-                Converters = { new JsonStringEnumConverter() }
-            };
-
-            var data = JsonSerializer.Deserialize<LanguageDTO>(json, options);
+            var data = JsonConvert.DeserializeObject<LanguageDTO>(json);
             if(data?.Data == null && string.IsNullOrWhiteSpace(data?.Code)) 
                 throw new Exception(Localisation.GetValue(InterfaceElements.JsonSerializeError));
 

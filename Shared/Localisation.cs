@@ -10,20 +10,54 @@ namespace Shared
         LargeFile,
         ErrorText,
         CloseText,
+        KeyNotFound,
+        KeyFound,
+        UserDataText,
+        ExitPageTitle,
+        ImportedLessonsPageTitle,
+        MyLessonsPageTitle,
+        LearnLessonPageTitle,
+        SettingsPageTitle,
+        StartPageTitle,
+        RegistrationPageTitle,
+        NeedEnterNickname,
+        NeedSelectLanguage,
+        CanChooseAvatar,
+        UseSchedule,
+        Next,
+        ExampleText,
     }
     public class Localisation
     {
         public readonly static Dictionary<InterfaceElements, string> DefaultText = new()
         {
-            [InterfaceElements.Yes] = "Yes", //Да
-            [InterfaceElements.No] = "No", //Нет
-            [InterfaceElements.ConfirmTitle] = "Confirm the action", // Подтвердите действие
-            [InterfaceElements.ExitQuestion] = "Do you really want to leave", // Вы действительно хотите выйти?
-            [InterfaceElements.JsonSerializeError] = "Failed to retrieve data from JSON.", // Не удалось получить данные из JSON
-            [InterfaceElements.EmptyFile] = "File is empty", // Файл пустой 
-            [InterfaceElements.LargeFile] = "File is large", // Файл слишком большой
-            [InterfaceElements.ErrorText] = "Error", // Ошибка
-            [InterfaceElements.CloseText] = "Close", // Закрыть
+            { InterfaceElements.Yes, "Yes" },
+            { InterfaceElements.No, "No" },
+            { InterfaceElements.ConfirmTitle, "Confirm action" },
+            { InterfaceElements.ExitQuestion, "Are you sure you want to exit?" },
+            { InterfaceElements.JsonSerializeError, "Failed to get data from JSON" },
+            { InterfaceElements.EmptyFile, "File is empty" },
+            { InterfaceElements.LargeFile, "File is too large" },
+            { InterfaceElements.ErrorText, "Error" },
+            { InterfaceElements.CloseText, "Close" },
+            { InterfaceElements.KeyNotFound, "Not found" },
+            { InterfaceElements.KeyFound, "Already exists" },
+            { InterfaceElements.UserDataText, "User profile data" },
+            //Заголовки страниц
+            { InterfaceElements.ExitPageTitle, "Exit" },
+            { InterfaceElements.ImportedLessonsPageTitle, "Imported lessons" },
+            { InterfaceElements.MyLessonsPageTitle, "My lessons" },
+            { InterfaceElements.LearnLessonPageTitle, "To study a lesson" },
+            { InterfaceElements.SettingsPageTitle, "Settings" },
+            { InterfaceElements.StartPageTitle, "Start page" },
+            //Форма регистрации
+            { InterfaceElements.RegistrationPageTitle, "Registration" },
+            { InterfaceElements.NeedEnterNickname, "You need to enter a pseudonym." },
+            { InterfaceElements.NeedSelectLanguage, "You need to choose a interface language or upload your own." },
+            { InterfaceElements.CanChooseAvatar, "You can choose an avatar." },
+            { InterfaceElements.UseSchedule, "Do you want to use the notification schedule?" },
+            { InterfaceElements.Next, "Next" },
+            { InterfaceElements.ExampleText, "Selected english language" },
         }; 
 
         public static Dictionary<InterfaceElements, string> Text { get; set; } = []; 

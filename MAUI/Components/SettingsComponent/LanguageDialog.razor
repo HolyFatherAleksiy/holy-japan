@@ -1,29 +1,6 @@
-@using DataBaseRepository.Models
-@using MAUI.Services
-@using MAUI.Services.Interfaces
 @using Microsoft.Extensions.Logging
-@inject ILanguageFileService _languageFile
 @inject ILogger<LanguageDialog> Logger
 <style>
-    .overlay{
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: 1111;
-        width: 100%;
-        height: 100%;
-        background-color: #000a;
-        backdrop-filter: blur(4px);
-    }
-    .dialog{
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 10px;
-        padding: 50px;
-    }
     .back{
         width: 100px;
         height: 100px;
@@ -47,21 +24,9 @@
     <button class="back" @onclick="@Back">
         <Blazicon Svg="@MdiIcon.ArrowLeft.WithColor("var(--primary)")"/>
     </button>
-    <button class="add" @onclick="@SelectFile">
-        <Blazicon Svg="@MdiIcon.Plus.WithColor("#fff")"/>
-    </button >
+
     <div class="dialog">
-        @foreach(var item in Languages)
-        {
-            var active = @IsSelected(item.Code);
-            <div class="card" data-is_active="@active.ToString()" >
-                @item.Code
-                @if (active)
-                {
-                    <span style="position: absolute; width: 30px; height: 30px; top: 0; right: 0;"><Blazicon Svg="@MdiIcon.CheckBold.WithColor("var(--primary)")"/></span>
-                }
-            </div>
-        }
+        <LanguageList />
     </div>
 </div>
 
@@ -69,29 +34,9 @@
 @code{
     [Parameter] public EventCallback OnBackClick { get; set; }
 
-    List<Language> Languages = [
-        new(){ Code = "RUS", JSON="123"}
-    ];
-    bool IsSelected(string value) => value.Equals(SelectedLanguage);
-    [Parameter] public string SelectedLanguage { get; set; } = "RUS";
 
     async Task Back()
     {
         await OnBackClick.InvokeAsync();
-    }
-
-    async Task SelectFile()
-    {
-        try
-        {
-            var file = await _languageFile.PickJsonFile();
-            var json = await _languageFile.GetJson(file);
-            var data = _languageFile.SerializeLanguage(json);
-            await Alerts.Show("Результат", data.Code, Localisation.GetValue(InterfaceElements.CloseText));
-        }
-        catch(Exception ex)
-        {
-            await Alerts.Show(Localisation.GetValue(InterfaceElements.ErrorText), ex.Message, Localisation.GetValue(InterfaceElements.CloseText));
-        }
     }
 }

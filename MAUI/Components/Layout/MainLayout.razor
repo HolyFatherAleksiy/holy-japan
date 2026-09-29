@@ -1,4 +1,30 @@
-﻿@using HolyJapan.Components.MenuComponent
+﻿@using DataBaseRepository.Services.Interfaces
+@using MAUI.Services
+@using Shared
 @inherits LayoutComponentBase
+@inject IUserDataService _userDataService
+@if (HasUserData)
+{
+    @Body
+}
+else
+{
+    <Registration />
+}
 
-@Body
+@code{
+    bool HasUserData = false;
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var data = await _userDataService.GetData();
+            HasUserData = data != null;
+        }
+        catch(Exception ex)
+        {
+            HasUserData = false;
+            await Alerts.Show(Localisation.GetValue(InterfaceElements.ErrorText), ex.Message, Localisation.GetValue(InterfaceElements.CloseText));
+        }
+    }
+}

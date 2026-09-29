@@ -1,0 +1,36 @@
+@using HolyJapan.Components.SettingsComponent
+@using Shared
+
+<style>
+    :root{
+        --background-image: url('Images/registration.gif')
+    }
+</style>
+
+<span class="page-title">   
+    <span class="icon" style="--w: 40px; --h: 40px; --c: var(--primary);"><Blazicon Svg="@MdiIcon.Translate"/></span>
+    @Localisation.GetValue(InterfaceElements.NeedSelectLanguage)
+</span>
+<div id="content" style="opacity: 1;">
+    <div style="height: 100%; widht: 100%; display: flex; flex-direction: column; gap: 50px; align-items: center; justify-content: center; padding: 20px;">
+    @if(step == 1)
+    {        
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: center;">
+            <LanguageList />
+        </div>
+        <span class="caption" style="--c: #fff; --fs: 18px;">*@Localisation.GetValue(InterfaceElements.ExampleText)</span> 
+    }
+    else if(step == 2)
+    {
+        
+    }
+        </div>
+</div>
+    <button class="btn btn-primary">
+       @Localisation.GetValue(InterfaceElements.Next) 
+        <span class="icon" style="--w: 50px; --h: 50px; --c: var(#fff);"><Blazicon Svg="@MdiIcon.ArrowRight"/></span>
+    </button>
+@code{
+    int step = 1;
+}
+
