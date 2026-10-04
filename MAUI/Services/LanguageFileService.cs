@@ -44,18 +44,13 @@ namespace MAUI.Services
         }
         public async Task<string> GetJsonByFileNameAsync(string filename)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = $"{assembly.GetName().Name}.Resources.Languages.{filename}";
-
-            using var stream = assembly.GetManifestResourceStream(resourceName) 
-                ?? throw new InvalidOperationException($"{filename} - {Localisation.GetValue(InterfaceElements.KeyNotFound)}");
-
+            using var stream = await FileSystem.OpenAppPackageFileAsync(filename);
             return await GetString(stream);
         }
         public LanguageDTO SerializeLanguage(string json)
         {
             var data = JsonConvert.DeserializeObject<LanguageDTO>(json);
-            if(data?.Data == null && string.IsNullOrWhiteSpace(data?.Code)) 
+            if(data?.Data == null || string.IsNullOrWhiteSpace(data?.Code) || string.IsNullOrWhiteSpace(data?.Version)) 
                 throw new Exception(Localisation.GetValue(InterfaceElements.JsonSerializeError));
 
             return data;

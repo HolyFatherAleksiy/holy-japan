@@ -35,6 +35,7 @@ namespace HolyJapan
             builder.Services.AddScoped<ILanguageFileService, LanguageFileService>();
             builder.Services.AddScoped<ILanguageService, LanguageService>();
             builder.Services.AddScoped<IInitializeService, InitializeService>();
+            builder.Services.AddScoped<IResizeService, ResizeService>();
             
             
             var app = builder.Build();

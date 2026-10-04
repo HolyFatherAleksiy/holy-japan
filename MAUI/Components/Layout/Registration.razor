@@ -1,5 +1,10 @@
+@using DataBaseRepository.Models
+@using DataBaseRepository.Services.Interfaces
 @using HolyJapan.Components.SettingsComponent
+@using MAUI.Services
 @using Shared
+@implements IDisposable
+@inject ILanguageService _languageService
 
 <style>
     :root{
@@ -7,30 +12,118 @@
     }
 </style>
 
+<span style="font-size: 10px; color: #fff; text-align: right;">
+    <p>CurrentLanguageCode: @UserData.CurrentLanguageCode</p>
+    <p>Name: @UserData.Name</p>
+    <p>EnableNottify: @UserData.EnableNottify</p>
+</span>
 <span class="page-title">   
-    <span class="icon" style="--w: 40px; --h: 40px; --c: var(--primary);"><Blazicon Svg="@MdiIcon.Translate"/></span>
-    @Localisation.GetValue(InterfaceElements.NeedSelectLanguage)
+    <span class="icon" style="--w: 40px; --h: 40px; --c: var(--primary);"><Blazicon Svg="@HeaderIcon"/></span>
+    @HeaderText
 </span>
 <div id="content" style="opacity: 1;">
     <div style="height: 100%; widht: 100%; display: flex; flex-direction: column; gap: 50px; align-items: center; justify-content: center; padding: 20px;">
-    @if(step == 1)
-    {        
-        <div style="display: flex; gap: 10px; align-items: center; justify-content: center;">
-            <LanguageList />
-        </div>
-        <span class="caption" style="--c: #fff; --fs: 18px;">*@Localisation.GetValue(InterfaceElements.ExampleText)</span> 
-    }
-    else if(step == 2)
-    {
-        
-    }
-        </div>
+        @if(step == 1)
+        {
+            <div style="display: flex; gap: 10px; align-items: center; justify-content: center;">
+                <LanguageList @bind-SelectedLanguage="@UserData.CurrentLanguageCode" />
+            </div>
+            <span class="caption" style="--c: #fff; --fs: 18px;">*@Localisation.GetValue(InterfaceElements.ExampleText)</span>         
+        }
+        else if(step == 2)
+        {
+            <input style="font-size: 50px;" />
+        }
+    </div>
 </div>
-    <button class="btn btn-primary">
+<div class="btn-group">
+    @if (step > 1)
+    {
+        <button class="btn btn-secondary" style="width: fit-content;" @onclick="@Back">
+            <span class="icon" style="--w: 50px; --h: 50px; --c: var(#fff);"><Blazicon Svg="@MdiIcon.KeyboardBackspace"/></span>
+        </button>
+    }
+    <button class="btn btn-primary" @onclick="@Next">
        @Localisation.GetValue(InterfaceElements.Next) 
         <span class="icon" style="--w: 50px; --h: 50px; --c: var(#fff);"><Blazicon Svg="@MdiIcon.ArrowRight"/></span>
     </button>
+</div>
 @code{
     int step = 1;
+    string HeaderText = "";
+    SvgIcon HeaderIcon = default!;
+
+    UserData UserData = new();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        SetStep(1);
+        _languageService.OnChanges += LanguageChanges;
+    }
+    void LanguageChanges()
+    {
+        SetStep(step);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        _languageService.OnChanges -= LanguageChanges;        
+    }
+    async Task Back()
+    {
+        step--;
+        SetStep(step);
+    }
+    async Task Next()
+    {
+        switch (step)
+        {
+            case 1:
+                if (string.IsNullOrWhiteSpace(UserData.CurrentLanguageCode))
+                {
+                    await ShowError();
+                    return;
+                }
+                SetStep(2);
+                break;
+            default:
+                if (string.IsNullOrWhiteSpace(UserData.Name))
+                {
+                    await ShowError();
+                    return;
+                }
+
+                break;
+        }
+    }
+
+    void SetStep(int step)
+    {
+        switch (step)
+        {
+            case 1:
+                SetDataStep(InterfaceElements.NeedSelectLanguage, MdiIcon.Translate, step);
+                break;
+            case 2:
+                SetDataStep(InterfaceElements.NeedEnterNickname, MdiIcon.Account, step);
+                break;
+            default:
+
+                break;
+        }
+    }
+    void SetDataStep(InterfaceElements interfaceElements, SvgIcon icon, int step)
+    {
+        HeaderText = Localisation.GetValue(interfaceElements);
+        HeaderIcon = icon;
+        this.step = step;
+    }
+    async Task ShowError()
+    {
+        await Alerts.Show(Localisation.GetValue(InterfaceElements.ErrorText), HeaderText, Localisation.GetValue(InterfaceElements.CloseText));
+    }
 }
 

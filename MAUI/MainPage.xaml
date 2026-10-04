@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:HolyJapan"
              xmlns:components="clr-namespace:HolyJapan.Components"
-             x:Class="HolyJapan.MainPage">
+             x:Class="HolyJapan.MainPage"
+             SafeAreaEdges="All">
 
     <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
         <BlazorWebView.RootComponents>

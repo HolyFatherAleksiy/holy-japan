@@ -1,5 +1,7 @@
 {
-    "Code" : "Eng 🇷🇺",
+    "Code" : "en-US",
+    "Icon" : "🇺🇸",
+    "Version" : "1",
     "Data" : {
         "Yes": "Yes",
         "No": "No",

@@ -6,6 +6,7 @@ namespace MAUI.Models
     {
         public string Code { get; set; } = "";
         public string Icon { get; set; } = "";
+        public string Version { get; set; } = "";
         public Dictionary<InterfaceElements, string> Data { get; set; } = [];
     }
 }

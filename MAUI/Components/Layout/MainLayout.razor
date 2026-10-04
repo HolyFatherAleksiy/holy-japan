@@ -21,9 +21,12 @@ else
             var data = await _userDataService.GetData();
             HasUserData = data != null;
         }
-        catch(Exception ex)
+        catch(KeyNotFoundException kex)
         {
             HasUserData = false;
+        }
+        catch(Exception ex)
+        {
             await Alerts.Show(Localisation.GetValue(InterfaceElements.ErrorText), ex.Message, Localisation.GetValue(InterfaceElements.CloseText));
         }
     }

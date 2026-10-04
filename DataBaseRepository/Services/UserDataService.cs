@@ -21,22 +21,27 @@ namespace DataBaseRepository.Services
             await _context.SaveChangesAsync();
             return userData;
         }
-        public async Task<UserData?> GetData()
+        public async Task<UserData> GetData()
         {
-            return await _context.UserDatas.FirstOrDefaultAsync();
+            return await _context.UserDatas.FirstOrDefaultAsync()
+                ?? throw new KeyNotFoundException($"{Localisation.GetValue(InterfaceElements.UserDataText)} - {Localisation.GetValue(InterfaceElements.KeyNotFound)}");
         }
         public async Task SetLocalisation(string code)
         {
-            var userData = await GetData() 
-                    ?? throw new KeyNotFoundException($"{Localisation.GetValue(InterfaceElements.UserDataText)} - {Localisation.GetValue(InterfaceElements.KeyNotFound)}");
+            var userData = await GetData();
             userData.CurrentLanguageCode = code;
             await _context.SaveChangesAsync();
         }
         public async Task SetNotify(bool value)
         {
-            var userData = await GetData() 
-                    ?? throw new KeyNotFoundException($"{Localisation.GetValue(InterfaceElements.UserDataText)} - {Localisation.GetValue(InterfaceElements.KeyNotFound)}");
+            var userData = await GetData();
             userData.EnableNottify = value;
+            await _context.SaveChangesAsync();
+        }
+        public async Task SetBackgroundImage(byte[] image)
+        {
+            var userData = await GetData();
+            userData.BackgroundImage = image;
             await _context.SaveChangesAsync();
         }
 

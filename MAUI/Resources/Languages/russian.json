@@ -1,5 +1,7 @@
 {
-    "Code" : "Rus",
+    "Code" : "ru-RU",
+    "Icon" : "🇷🇺",
+    "Version" : "1",
     "Data" : {
         "Yes": "Да",
         "No": "Нет",

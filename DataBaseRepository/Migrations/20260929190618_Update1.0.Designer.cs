@@ -3,6 +3,7 @@ using System;
 using DataBaseRepository.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataBaseRepository.Migrations
 {
     [DbContext(typeof(SQLiteDbContext))]
-    partial class SQLiteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260929190618_Update1.0")]
+    partial class Update10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.12");
@@ -26,18 +29,7 @@ namespace DataBaseRepository.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Icon")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("JSON")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Version")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -55,7 +47,7 @@ namespace DataBaseRepository.Migrations
                     b.Property<TimeSpan>("AppUseTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<byte[]>("BackgroundImage")
+                    b.Property<byte[]>("Avatar")
                         .IsRequired()
                         .HasColumnType("BLOB");
 

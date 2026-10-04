@@ -1,3 +1,4 @@
+@using System.Globalization
 @using DataBaseRepository.Models
 @using DataBaseRepository.Services.Interfaces
 @using MAUI.Services
@@ -7,11 +8,21 @@
 
 @inject ILanguageFileService _languageFile
 @inject ILanguageService _languageService
+@inject IUserDataService _userDataService
+@inject IResizeService _resizeService
+
+@implements IAsyncDisposable
+
+<span>
+    <p>@width px</p>
+    <p>@height px</p>
+</span>
 @foreach(var item in Languages)
 {
     var active = @IsSelected(item.Code);
     <div class="card" data-is_active="@active.ToString()" @onclick="@(async () => await SelectLanguage(item))" >
-        @item.Code
+        <span>@item.Code</span>
+        <span>@item.Icon</span>
         @if (active)
         {
             <span style="position: absolute; width: 30px; height: 30px; top: 0; right: 0;"><Blazicon Svg="@MdiIcon.CheckBold.WithColor("var(--primary)")"/></span>
@@ -25,13 +36,59 @@
 @code{
     List<Language> Languages = [];
     bool IsSelected(string value) => value.Equals(SelectedLanguage);
-    [Parameter] public string SelectedLanguage { get; set; } = "Eng";
-    [Parameter] public EventCallback<Language> OnSelectLanguage { get; set; }
+    [Parameter] public string SelectedLanguage { get; set; } = "en-US";
+    [Parameter] public EventCallback<string> SelectedLanguageChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        _resizeService.OnChanged += OnDisplayInfoChanged;
+        await _resizeService.StartTracking();
+
         await UpdateList();
+        await GetSelectedLanguage();
     }
+    double width = 0;
+    double height = 0;
+
+    void OnDisplayInfoChanged(WindowSize windowSize)
+    {
+        width = windowSize.Width;
+        height = windowSize.Height;
+        
+        InvokeAsync(StateHasChanged);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _resizeService.OnChanged -= OnDisplayInfoChanged;
+    }
+
+    async Task GetSelectedLanguage()
+    {
+        try
+        {
+            var userData = await _userDataService.GetData();
+            SelectedLanguage = userData.CurrentLanguageCode;
+        }
+        catch (KeyNotFoundException kex)
+        {
+            CultureInfo currentCulture = CultureInfo.CurrentUICulture;
+            var language = Languages.FirstOrDefault(p=>p.Code == currentCulture.Name) 
+                ?? throw new Exception();
+            await SelectLanguage(language);
+
+        }
+        catch (Exception ex)
+        {
+            SelectedLanguage = Localisation.DefaultCode;
+        }
+        finally
+        {
+            _languageService.InvokeChanges();
+        }
+    }
+
+
 
     async Task UpdateList()
     {
@@ -50,8 +107,8 @@
 
         var data = JsonConvert.DeserializeObject<Dictionary<InterfaceElements, string>>(language.JSON) ?? Localisation.DefaultText;
         Localisation.Text = data;
-        await InvokeAsync(StateHasChanged);
-        await Alerts.Show(Localisation.GetValue(InterfaceElements.ErrorText), Localisation.GetValue(InterfaceElements.Next), Localisation.GetValue(InterfaceElements.CloseText));
+        _languageService.InvokeChanges();
+        await SelectedLanguageChanged.InvokeAsync(language.Code);
     }
     async Task SelectFile()
     {
@@ -60,7 +117,7 @@
             var file = await _languageFile.PickJsonFile();
             var json = await _languageFile.GetJson(file);
             var data = _languageFile.SerializeLanguage(json);
-            var newLanguage = await _languageService.AddAsync(data.Code, file.FileName, JsonConvert.SerializeObject(data.Data));
+            var newLanguage = await _languageService.AddAsync(data.Code, file.FileName, data.Icon, data.Version, JsonConvert.SerializeObject(data.Data));
             Languages.Add(newLanguage);
             await InvokeAsync(StateHasChanged);
         }

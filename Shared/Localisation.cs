@@ -1,3 +1,5 @@
+using System.ComponentModel.Design.Serialization;
+
 namespace Shared
 {
     public enum InterfaceElements{
@@ -29,6 +31,7 @@ namespace Shared
     }
     public class Localisation
     {
+        public const string DefaultCode = "en-US";
         public readonly static Dictionary<InterfaceElements, string> DefaultText = new()
         {
             { InterfaceElements.Yes, "Yes" },

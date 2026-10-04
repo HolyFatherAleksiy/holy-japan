@@ -1,7 +1,9 @@
+using System.Net.Http.Json;
 using DataBaseRepository.Context;
 using DataBaseRepository.Services.Interfaces;
 using MAUI.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace MAUI.Services
 {
@@ -23,7 +25,7 @@ namespace MAUI.Services
             using var db = _contextFactory.CreateDbContext();
             db.Database.Migrate();
 
-            var list = db.Languages.ToList();
+            var list = db.Languages.Where(p=>p.IsDefault).ToList();
             if(list.Count != 0)
             {
                 db.Languages.RemoveRange(list);
@@ -39,9 +41,10 @@ namespace MAUI.Services
 
         async Task InitializeLanguage(string filename)
         {
-            var json = await _languageFileService.GetJsonByFileNameAsync(filename);
-            var data = _languageFileService.SerializeLanguage(json);
-            var language = await _languageService.AddAsync(data.Code, filename, json);
+            var fileJSON = await _languageFileService.GetJsonByFileNameAsync(filename);
+            var data = _languageFileService.SerializeLanguage(fileJSON);
+            var dataJSON = JsonConvert.SerializeObject(data.Data);
+            var language = await _languageService.AddAsync(data.Code, filename, data.Icon, data.Version, dataJSON, true);
         }
     }
 }
