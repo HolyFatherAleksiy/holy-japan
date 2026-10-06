@@ -8,16 +8,12 @@ export function startTracking(ref) {
 
     observer = new ResizeObserver(entries => {
         for (const entry of entries) {
-            // contentRect — размер content-box без padding/border
-            // если нужен полный размер с padding — используйте borderBoxSize
             const { width, height } = entry.contentRect;
             dotNetRef?.invokeMethodAsync('OnWindowSizeChanged', width, height);
         }
     });
 
     observer.observe(target);
-
-    // начальное значение сразу, не дожидаясь первого изменения
     const rect = target.getBoundingClientRect();
     dotNetRef.invokeMethodAsync('OnWindowSizeChanged', rect.width, rect.height);
 }

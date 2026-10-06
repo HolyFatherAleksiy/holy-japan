@@ -12,11 +12,11 @@
     }
 </style>
 
-<span style="font-size: 10px; color: #fff; text-align: right;">
+@* <span style="font-size: 10px; color: #fff; text-align: right;">
     <p>CurrentLanguageCode: @UserData.CurrentLanguageCode</p>
     <p>Name: @UserData.Name</p>
     <p>EnableNottify: @UserData.EnableNottify</p>
-</span>
+</span> *@
 <span class="page-title">   
     <span class="icon" style="--w: 40px; --h: 40px; --c: var(--primary);"><Blazicon Svg="@HeaderIcon"/></span>
     @HeaderText
@@ -25,10 +25,7 @@
     <div style="height: 100%; widht: 100%; display: flex; flex-direction: column; gap: 50px; align-items: center; justify-content: center; padding: 20px;">
         @if(step == 1)
         {
-            <div style="display: flex; gap: 10px; align-items: center; justify-content: center;">
-                <LanguageList @bind-SelectedLanguage="@UserData.CurrentLanguageCode" />
-            </div>
-            <span class="caption" style="--c: #fff; --fs: 18px;">*@Localisation.GetValue(InterfaceElements.ExampleText)</span>         
+            <LanguageList SelectedLanguageChanged="@SelectLanguage" />
         }
         else if(step == 2)
         {
@@ -40,12 +37,12 @@
     @if (step > 1)
     {
         <button class="btn btn-secondary" style="width: fit-content;" @onclick="@Back">
-            <span class="icon" style="--w: 50px; --h: 50px; --c: var(#fff);"><Blazicon Svg="@MdiIcon.KeyboardBackspace"/></span>
+            <span class="icon" style="--w: 50px; --h: 50px; --c: var(#fff); --bc: #0002"><Blazicon Svg="@MdiIcon.KeyboardBackspace"/></span>
         </button>
     }
     <button class="btn btn-primary" @onclick="@Next">
        @Localisation.GetValue(InterfaceElements.Next) 
-        <span class="icon" style="--w: 50px; --h: 50px; --c: var(#fff);"><Blazicon Svg="@MdiIcon.ArrowRight"/></span>
+        <span class="icon" style="--w: 50px; --h: 50px; --c: var(#fff); --bc: #0002"><Blazicon Svg="@MdiIcon.ArrowRight"/></span>
     </button>
 </div>
 @code{
@@ -66,6 +63,10 @@
     {
         SetStep(step);
         StateHasChanged();
+    }
+    void SelectLanguage(string value)
+    {
+        UserData.CurrentLanguageCode = value;
     }
 
     public void Dispose()

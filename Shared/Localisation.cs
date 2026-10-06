@@ -28,6 +28,7 @@ namespace Shared
         UseSchedule,
         Next,
         ExampleText,
+        AppendLanguage,
     }
     public class Localisation
     {
@@ -61,6 +62,7 @@ namespace Shared
             { InterfaceElements.UseSchedule, "Do you want to use the notification schedule?" },
             { InterfaceElements.Next, "Next" },
             { InterfaceElements.ExampleText, "Selected english language" },
+            { InterfaceElements.AppendLanguage, "Add custom language" },
         }; 
 
         public static Dictionary<InterfaceElements, string> Text { get; set; } = []; 

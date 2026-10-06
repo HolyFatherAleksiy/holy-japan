@@ -1,6 +1,8 @@
 @using System.Globalization
 @using DataBaseRepository.Models
 @using DataBaseRepository.Services.Interfaces
+@using HolyJapan.Components.DropMenuComponent
+@using MAUI.Models
 @using MAUI.Services
 @using MAUI.Services.Interfaces
 @using Newtonsoft.Json
@@ -13,30 +15,95 @@
 
 @implements IAsyncDisposable
 
-<span>
+@* <span>
     <p>@width px</p>
     <p>@height px</p>
-</span>
-@foreach(var item in Languages)
-{
-    var active = @IsSelected(item.Code);
-    <div class="card" data-is_active="@active.ToString()" @onclick="@(async () => await SelectLanguage(item))" >
-        <span>@item.Code</span>
-        <span>@item.Icon</span>
-        @if (active)
+</span> *@
+<style>
+    .language-container {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+    .language-grid {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, 150px);
+        gap: 20px;
+        justify-content: center;
+        align-items: start;
+    }
+    .language-footer {
+        margin-top: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+    }
+</style>
+
+<div class="language-container">
+    <div class="language-grid">
+        @foreach(var item in Languages)
         {
-            <span style="position: absolute; width: 30px; height: 30px; top: 0; right: 0;"><Blazicon Svg="@MdiIcon.CheckBold.WithColor("var(--primary)")"/></span>
+            var active = item.IsSelected;
+            <div class="card" data-is_active="@active.ToString()" @onclick="@(async () => await SelectLanguage(item))">
+                @if (!item.MenuIsOppened)
+                {
+                    <span>@item.Language.Code</span>
+                    <span>@item.Language.Icon</span>
+                    @if (active)
+                    {
+                        <span style="position: absolute; width: 30px; height: 30px; bottom: 5px; right: 5px;">
+                            <Blazicon Svg="@MdiIcon.CheckBold.WithColor("var(--primary)")"/>
+                        </span>
+                    }
+                    <button @onclick:stopPropagation="true" @onclick="@(() => ToggleMenu(item))" class="btn-icon btn-opacity-primary" style="--s: 40px; position: absolute; top: -10px; right: -10px;">
+                        <Blazicon Svg="@MdiIcon.DotsHorizontal"/>
+                    </button>
+                }
+                else
+                {
+                    @if (!item.Language.IsDefault)
+                    {
+                    }
+                    <div style="display: flex; gap: 10px">
+                        <button @onclick:stopPropagation="true" @onclick="@(() => ToggleMenu(item))" class="btn-icon btn-opacity-error" style="--s: 50px;">
+                            <Blazicon Svg="@MdiIcon.Close"/>
+                        </button>
+                        <button @onclick:stopPropagation="true" @onclick="@(() => ToggleMenu(item))" class="btn-icon btn-opacity-info" style="--s: 50px;">
+                            <Blazicon Svg="@MdiIcon.Refresh"/>
+                        </button>
+                    </div>
+                    <button @onclick:stopPropagation="true" @onclick="@(() => ToggleMenu(item))" class="btn-icon btn-opacity-secondary" style="--s: 40px; position: absolute; top: -10px; right: -10px;">
+                        <Blazicon Svg="@MdiIcon.ArrowTopRightThick"/>
+                    </button>
+                    <span style="font-size: 18px; position: absolute; bottom: 5px; right: auto; left: auto">v: @item.Language.Version</span>
+                }
+            </div>
         }
     </div>
-}
-<div class="card secondary" @onclick="@SelectFile">
-    <Blazicon Svg="@MdiIcon.Plus.WithColor("#fff")"/>
+
+    <div class="language-footer">
+        <span class="caption" style="--c: #fff; --fs: 18px;">
+            *@Localisation.GetValue(InterfaceElements.ExampleText)
+        </span>
+
+        <button class="btn btn-sm btn-opacity-secondary" @onclick="@SelectFile">
+            @Localisation.GetValue(InterfaceElements.AppendLanguage)
+            <span class="icon" style="--w: 50px; --h: 50px; --c: #fff; --bc: #0002">
+                <Blazicon Svg="@MdiIcon.Plus"/>
+            </span>
+        </button>
+    </div>
 </div>
 
 @code{
-    List<Language> Languages = [];
-    bool IsSelected(string value) => value.Equals(SelectedLanguage);
-    [Parameter] public string SelectedLanguage { get; set; } = "en-US";
+    List<LanguageUIDTO> Languages = [];
     [Parameter] public EventCallback<string> SelectedLanguageChanged { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -45,7 +112,7 @@
         await _resizeService.StartTracking();
 
         await UpdateList();
-        await GetSelectedLanguage();
+        await GetSystemLanguage();
     }
     double width = 0;
     double height = 0;
@@ -54,7 +121,7 @@
     {
         width = windowSize.Width;
         height = windowSize.Height;
-        
+
         InvokeAsync(StateHasChanged);
     }
 
@@ -63,24 +130,41 @@
         _resizeService.OnChanged -= OnDisplayInfoChanged;
     }
 
-    async Task GetSelectedLanguage()
+    void ToggleMenu(LanguageUIDTO item)
     {
+        item.MenuIsOppened = !item.MenuIsOppened;
+    }
+    void CloseAllMenu()
+    {
+        Languages.ForEach(p=>p.MenuIsOppened = false);
+    }
+    void UnselectAll()
+    {
+        Languages.ForEach(p=>p.IsSelected = false);
+    }
+    async Task GetSystemLanguage()
+    {
+        async Task<LanguageUIDTO?> TrySelect(string code)
+        {
+            var language = Languages.FirstOrDefault(p=>p.Language.Code == code) 
+                ?? throw new Exception($"{code} - {Localisation.GetValue(InterfaceElements.KeyNotFound)}");
+            language.IsSelected = true;
+            return language;
+        }
+        CultureInfo currentCulture = CultureInfo.CurrentUICulture;
         try
         {
             var userData = await _userDataService.GetData();
-            SelectedLanguage = userData.CurrentLanguageCode;
+            _ = await TrySelect(userData.CurrentLanguageCode);
         }
-        catch (KeyNotFoundException kex)
+        catch (KeyNotFoundException)
         {
-            CultureInfo currentCulture = CultureInfo.CurrentUICulture;
-            var language = Languages.FirstOrDefault(p=>p.Code == currentCulture.Name) 
-                ?? throw new Exception();
-            await SelectLanguage(language);
-
+            var language = await TrySelect(currentCulture.Name);
+            await SelectLanguage(language!);
         }
         catch (Exception ex)
         {
-            SelectedLanguage = Localisation.DefaultCode;
+            await Alerts.Show(Localisation.GetValue(InterfaceElements.ErrorText), ex.Message, Localisation.GetValue(InterfaceElements.CloseText));
         }
         finally
         {
@@ -94,21 +178,27 @@
     {
         try
         {
-            Languages = await _languageService.GetAllData();
+            var languages = await _languageService.GetAllData();
+            Languages = languages.Select(p=> new LanguageUIDTO(p)).ToList();
         }
         catch(Exception ex)
         {
             await Alerts.Show(Localisation.GetValue(InterfaceElements.ErrorText), ex.Message, Localisation.GetValue(InterfaceElements.CloseText));
         }
     }
-    async Task SelectLanguage(Language language)
+    async Task SelectLanguage(LanguageUIDTO item)
     {
-        SelectedLanguage = language.Code;
+        if (!item.IsSelected)
+        {
+            UnselectAll();
+            item.IsSelected = true;
 
-        var data = JsonConvert.DeserializeObject<Dictionary<InterfaceElements, string>>(language.JSON) ?? Localisation.DefaultText;
-        Localisation.Text = data;
-        _languageService.InvokeChanges();
-        await SelectedLanguageChanged.InvokeAsync(language.Code);
+            var data = JsonConvert.DeserializeObject<Dictionary<InterfaceElements, string>>(item.Language.JSON) ?? Localisation.DefaultText;
+            Localisation.Text = data;
+            _languageService.InvokeChanges();
+            await SelectedLanguageChanged.InvokeAsync(item.Language.Code);
+            CloseAllMenu();
+        }
     }
     async Task SelectFile()
     {
@@ -118,7 +208,7 @@
             var json = await _languageFile.GetJson(file);
             var data = _languageFile.SerializeLanguage(json);
             var newLanguage = await _languageService.AddAsync(data.Code, file.FileName, data.Icon, data.Version, JsonConvert.SerializeObject(data.Data));
-            Languages.Add(newLanguage);
+            Languages.Add(new LanguageUIDTO(newLanguage));
             await InvokeAsync(StateHasChanged);
         }
         catch(Exception ex)

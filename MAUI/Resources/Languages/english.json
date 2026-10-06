@@ -27,6 +27,7 @@
         "CanChooseAvatar" : "You can choose an avatar.",
         "UseSchedule" : "Do you want to use the notification schedule?",
         "Next" : "Next",
-        "ExampleText" : "Selected english language"
+        "ExampleText" : "Selected english language",
+        "AppendLanguage" : "Add custom language"
     } 
 }
